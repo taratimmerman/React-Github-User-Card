@@ -12,14 +12,14 @@ class App extends React.Component {
 
   componentDidMount() {
     axios.get('https://api.github.com/users/taratimmerman')
-    .then((res1) => {
-      this.setState({
-        searchee: res1.data
+      .then((res1) => {
+        this.setState({
+          searchee: res1.data
+        })
       })
-    })
-    .catch(err => {
-      console.log(err);
-    });
+      .catch(err => {
+        console.log(err);
+      });
 
     axios.get('https://api.github.com/users/taratimmerman/followers')
       .then((res2) => {
@@ -33,24 +33,50 @@ class App extends React.Component {
   }
 
   handleChange = e => {
-    this.setState({
-      searchee: e.target.value
+        this.setState({
+        searchee: e.target.value
     })
+  }
+
+  handleClick = e => {
+    e.preventDefault();
+    axios.get(`https://api.github.com/users/${this.state.searchee}`)
+      .then((res1) => {
+        this.setState({
+          searchee: res1.data
+        })
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+    axios.get(`https://api.github.com/users/${this.state.searchee}/followers`)
+      .then((res2) => {
+        this.setState({
+          followers: res2.data
+        })
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   render() {
     return (
       <div>
-        <h1>React Github User Card</h1>
-        {/* <form>
-          <input
-            onChange={this.handleChange}
-            type='text'
-          />
-          <button
-            onClick={this.handleClick}
-          >Search GitHub User</button>
-        </form> */}
+        <form className='top-area'>
+          <h1>React GitHub User Card</h1>
+          <div className='search-area'>
+            <input
+              onChange={this.handleChange}
+              type='text'
+              placeholder='Enter a GitHub username'
+            />
+            <button
+              onClick={this.handleClick}
+            >Search</button>
+          </div>
+        </form>
         <Searchee searchee={this.state.searchee} />
         <Followers followers={this.state.followers} searchee={this.state.searchee} />
       </div>
